@@ -57,8 +57,11 @@
 <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js'></script>
 <script>
-var map = L.map('map',{doubleClickZoom:false}).setView([42.041,12.129], 7);
+var map = L.map('map',{doubleClickZoom:false}).setView([42.041,12.129], 6);
+var hash = new L.Hash(map);
+
 var laymarkers=L.layerGroup();
 
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -71,7 +74,7 @@ L.control.locate({
         popup: "Sei entro {distance} {unit} da questo punto",
         outsideMapBoundsMsg: "Sembri essere fuori da questa mappa..."
     },
-    locateOptions: {enableHighAccuracy: true, maxZoom: 13}
+    locateOptions: {enableHighAccuracy: true, maxZoom: 12}
     }).addTo(map);
 
 map.on('dblclick', function(g) { 
