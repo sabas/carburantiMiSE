@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css' rel='stylesheet' />
+<!--[if lt IE 9]>
+  <link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.21.0/L.Control.Locate.ie.css' rel='stylesheet' />
+<![endif]-->
+<style>
+#map
+{
+  position:fixed;
+  top:0px;
+  bottom:0px;
+  right:0px;
+  left:0px;
+}
+*{font-family:sans-serif;font-size:10pt;}
+
+#text{
+  position:fixed;
+  top:-10px;
+  right:3px;
+  width:450px;
+  height:30px;
+  z-index:99999;
+  text-align: center;
+  border-radius: 2px 4px 6px 8px;
+  background-color:#FF9933;
+}
+
+@media all and (max-width:600px){
+    #text{
+    width:200px;
+    height:60px;
+    }
+}
+
+.leaflet-popup-content-wrapper { background-color: #FF9933 }
+.leaflet-popup-content {
+	font: 12px/1.4 "Helvetica Neue", Arial, Helvetica, sans-serif;
+	color:#000000;
+	}
+.leaflet-popup-content th {
+	text-align: right;
+	}		
+.leaflet-popup-content td {
+	text-align: right;
+	font-weight:bold;
+	}	
+</style>
+</head>
+<body>
+<div id="text"><p>Prezzi carburanti rilevati dal sito <a href="https://carburanti.mise.gov.it/OssPrezziSearch/">OsservaPrezzi Carburanti</a> del MiSE.</p></div>
+<div id="map"></div>
+
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
+<script>
+var map = L.map('map',{doubleClickZoom:false}).setView([42.041,12.129], 7);
+var laymarkers=L.layerGroup();
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+L.control.locate({
+	follow: true,
+    strings: {
+        title: "Mostra la mia posizione",
+        popup: "Sei entro {distance} {unit} da questo punto",
+        outsideMapBoundsMsg: "Sembri essere fuori da questa mappa..."
+    },
+    locateOptions: {enableHighAccuracy: true, maxZoom: 13}
+    }).addTo(map);
+
+map.on('dblclick', function(g) { 
+    getData(g.latlng.lat+"-"+g.latlng.lng+"#");       
+});
+
+map.on('locationfound', function(e) {
+    getData(e.latitude+"-"+e.longitude+"#");
+});
+
+function getData(pointString){
+    $.ajax({
+      type: "GET",
+      url: "positionProxy.php",//"https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/position",
+      data: {"pointsListStr": pointString},
+      success: function(data){        
+          if (map.hasLayer(laymarkers)) {
+            //console.log("Clear previous POI layer...");
+            laymarkers.clearLayers();
+          };
+          map.panTo([data.center.first,data.center.second]);
+             
+          $.each(data.array,function(id,entry){
+              var marker=L.marker([entry.lat,entry.lon]);
+              
+              var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
+              var prezzi="<table>";
+              prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
+              $.each(entry.carburanti,function(id,c){
+                prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+c.isSelf+"</td></tr>";
+              });
+              prezzi+="</table>";
+              marker.bindPopup(head+prezzi);
+              
+              marker.addTo(laymarkers);
+          });
+          laymarkers.addTo(map);
+      },
+      dataType: 'json'
+    });
+}
+</script>
+</body>
+</html>
