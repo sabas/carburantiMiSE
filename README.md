@@ -1,21 +1,24 @@
 carburantiMiSE
 ==============
 
-Interrogazione dell'Osservatorio Carburanti del Ministero dello Sviluppo Economico.
+Interrogazione dell'[Osservatorio Carburanti del Ministero dello Sviluppo Economico](https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/).
 
 distributori.html sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
 
 Live su http://toolserver.openstreetmap.it/carburantiMiSE/
 
+Icone provenienti dal sito dell'Osservatorio.
+
 Autori
 ------
-Stefano Sabatini
-Marco Braida
+- Stefano Sabatini
+- Marco Braida
 
 Note
 -----
 
 Regioni:
+```
 2: Abruzzo
 3: Basilicata
 7: Calabria
@@ -36,8 +39,10 @@ Regioni:
 20: Umbria
 16: Valle d&#39;Aosta
 17: Veneto
+```
 
 Carburanti
+```
 1-x: Benzina
 1-1: Benzina (Self)
 1-0: Benzina (Servito)
@@ -46,24 +51,35 @@ Carburanti
 2-0: Gasolio (Servito)
 3-x: Metano
 4-x: GPL
+```
 
 Province nella regione
+```
  curl --data "regioneId=18" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/province
+```
 
 Comuni nella regione
+```
  curl --data "provinciaId=GE" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/comuni
+```
 
 Interrogazione località
-  curl --data "region=18&province=GE&town=Cicagna&carb=" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/localita
+```
+ curl --data "region=18&province=GE&town=Cicagna&carb=" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/localita
+```
 
 Esempio interrogazione per località, parametri passati via POST:
+```
 region:18
 province:GE
 town:Arenzano
 carb:2-x
 ordPrice:desc
+```
 
 Ricerca per area o per punto (area max 100kmq o 10km2 di raggio)
+```
  curl --data "pointsListStr=39.919216100221554-8.567276000976562#" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/position
+```
 
 Formato poligono lat-lon#[...]
