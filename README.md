@@ -3,8 +3,6 @@ carburantiMiSE
 
 Interrogazione dell'[Osservatorio Carburanti del Ministero dello Sviluppo Economico](https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/).
 
-distributori.html sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
-
 Live su http://toolserver.openstreetmap.it/carburantiMiSE/
 
 Icone provenienti dal sito dell'Osservatorio.
@@ -13,6 +11,14 @@ Autori
 ------
 - Stefano Sabatini
 - Marco Braida
+- Fabrizio Tambussa
+
+Contenuto
+---------
+
+distributori.html sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
+
+scraper: archivia tutti i dati dall'API in un certo punto temporale.
 
 Note
 -----
