@@ -24,7 +24,8 @@ try{
     $file_db->beginTransaction();
     foreach($arr as $entry){
 	$addr=$entry['addr'];
-	preg_match('/.*#(.*)\((.*)\)/',$addr, $matches);
+	$r=preg_match('/.*#(.*)\((.*)\)/',$addr, $matches);
+	if($r==0||$r===NULL) $matches=['','',''];
 	$dis_sth->execute(array(':id' => $entry['id'], ':name' => $entry['name'],':bnd' => $entry['bnd'],':lat' => $entry['lat'],':lon' => $entry['lon'],':addr' => $entry['addr'],':comune' => ucwords(strtolower(trim($matches[1]))),':provincia' => $matches[2]) );
 
         $carburanti=$entry['carburanti'];
