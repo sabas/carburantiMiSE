@@ -10,7 +10,7 @@ $arr=$json['array'];
 echo "Processing ".$regione."\n";
 
 try{
-    $file_db = new PDO('sqlite:scrape.sqlite');
+    $file_db = new PDO('sqlite:db/scrape.sqlite');
     $file_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $dis_sql='INSERT OR REPLACE INTO `distributori`(`id`, `name`, `bnd`, `lat`, `lon`, `addr`, `comune`, `provincia`) ';
