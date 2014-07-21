@@ -156,10 +156,10 @@ function getData(pointString){
             $.each(entry.carburanti,function(id,c){
 
             //self deve essere una chiave
-                if(petrolData[c['carb']] !== undefined && petrolData[c['isSelf']][c['carb']]['prezzo']<c['prezzo']) return;
+                if(petrolData[c['carb']] !== undefined && (petrolData[c['isSelf']][c['carb']]['prezzo']*1)<(c['prezzo']*1)) return;
                 if(petrolData[c['isSelf']]===undefined) petrolData[c['isSelf']]=[];
                 petrolData[c['isSelf']][c['carb']]=[];
-                petrolData[c['isSelf']][c['carb']]['prezzo']=c['prezzo'];
+                petrolData[c['isSelf']][c['carb']]['prezzo']=(c['prezzo']*1);
                 petrolData[c['isSelf']][c['carb']]['distributore']=entry;
             });
 
@@ -217,7 +217,7 @@ if(self=='x')
     if (petrolData[0][carb]===undefined) entry=petrolData[1][carb]['distributore'];
     else if (petrolData[1][carb]===undefined) entry=petrolData[0][carb]['distributore'];
     else
-    if (petrolData[0][carb]<petrolData[1][carb]) entry=petrolData[0][carb]['distributore'];
+    if (petrolData[0][carb]['prezzo']<petrolData[1][carb]['prezzo']) entry=petrolData[0][carb]['distributore'];
     else entry=petrolData[1][carb]['distributore'];
 }
 else
