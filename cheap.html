@@ -48,13 +48,13 @@ ul.list{list-style:none;}
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Estratti OSM</a>
+          <a class="navbar-brand" href="#">Cheap Gas</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <!--li class="active"><a href="#">Home</a></li>
             <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact">Contact</a></li-->
           </ul>
 
         </div><!--/.nav-collapse -->
@@ -104,11 +104,15 @@ ul.list{list-style:none;}
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js" ></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js'></script>
 
-
-    <script>
-
+<script>
 var map = L.map('map',{doubleClickZoom:false}).setView([42.041,12.129], 6);
+
+var hash = new L.Hash(map);
+
+var laymarkers=L.layerGroup();
+
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
@@ -130,36 +134,110 @@ map.on('locationfound', function(e) {
     getData(e.latitude+"-"+e.longitude+"#");
 });
 
+var CIcon = L.Icon.extend({
+    options: {
+        iconSize:     [32, 37],
+        iconAnchor:   [16, 37],
+        popupAnchor:  [0, -36]
+    }
+});
+
+var petrolData;
 function getData(pointString){
     $.ajax({
       type: "GET",
       url: "positionProxy.php",//"https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/position",
       data: {"pointsListStr": pointString},
       success: function(data){
-          if (map.hasLayer(laymarkers)) {
-            //console.log("Clear previous POI layer...");
-            laymarkers.clearLayers();
-          };
-          map.panTo([data.center.first,data.center.second]);
-
-          $.each(data.array,function(id,entry){
-              var marker=L.marker([entry.lat,entry.lon],{icon: new CIcon({iconUrl: 'img/'+entry.bnd+'_th3.png'})});
-
-              var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
-              var prezzi="<table>";
-              prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
-              $.each(entry.carburanti,function(id,c){
-                prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+c.isSelf+"</td></tr>";
-              });
-              prezzi+="</table>";
-              marker.bindPopup(head+prezzi);
-
-              marker.addTo(laymarkers);
-          });
-          laymarkers.addTo(map);
+        petrolData=[];
+        
+        $.each(data.array,function(id,entry){
+            $.each(entry.carburanti,function(id,c){
+            
+            //self deve essere una chiave
+                if(petrolData[c['carb']] !== undefined && petrolData[c['isSelf']][c['carb']]['prezzo']<c['prezzo']) return;
+                if(petrolData[c['isSelf']]===undefined) petrolData[c['isSelf']]=[];
+                petrolData[c['isSelf']][c['carb']]=[];
+                petrolData[c['isSelf']][c['carb']]['prezzo']=c['prezzo'];
+                petrolData[c['isSelf']][c['carb']]['distributore']=entry;
+            });
+              
+        });
+        loadData();
       },
       dataType: 'json'
     });
+}
+
+function loadData()
+{
+    switch($('#tipo').val()){
+        case "1-x":{
+        actualDisplay('Benzina','x');
+        break;
+        }
+        case "1-1":{
+        actualDisplay('Benzina',1);
+        break;
+        }
+        case "1-0":{
+        actualDisplay('Benzina',0);
+        break;
+        }
+        case "2-x":{
+        actualDisplay('Gasolio','x');
+        break;
+        }
+        case "2-1":{
+        actualDisplay('Gasolio',1);
+        break;
+        }
+        case "2-0":{
+        actualDisplay('Gasolio',0);
+        break;
+        }
+        case "3-x":{
+        actualDisplay('Metano','x'); //0 per default?
+        break;
+        }
+        case "4-x":{
+        actualDisplay('GPL','x');
+        break;
+        }
+    }
+}
+
+function actualDisplay(carb,self){
+var entry;
+if(self=='x')
+{
+    if (petrolData[0][carb]===undefined) entry=petrolData[1][carb]['distributore'];
+    else if (petrolData[1][carb]===undefined) entry=petrolData[0][carb]['distributore'];
+    else
+    if (petrolData[0][carb]<petrolData[1][carb]) entry=petrolData[0][carb]['distributore'];
+    else entry=petrolData[1][carb]['distributore'];
+}
+else
+    entry=petrolData[self][carb]['distributore'];
+
+           if (map.hasLayer(laymarkers)) {
+            laymarkers.clearLayers();
+            map.removeLayer(laymarkers);
+          };
+          
+          var marker=L.marker([entry.lat,entry.lon],{icon: new CIcon({iconUrl: 'img/'+entry.bnd+'_th3.png'})});
+
+          var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
+          var prezzi="<table>";
+          prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
+          $.each(entry.carburanti,function(id,c){
+            prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+c.isSelf+"</td></tr>";
+          });
+          prezzi+="</table>";
+          marker.bindPopup(head+prezzi);
+
+          marker.addTo(laymarkers);
+        laymarkers.addTo(map);
 }
     </script>
   </body>
