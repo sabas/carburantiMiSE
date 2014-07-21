@@ -154,9 +154,10 @@ function getData(pointString){
 
         $.each(data.array,function(id,entry){
             $.each(entry.carburanti,function(id,c){
-
-            //self deve essere una chiave
-                if(petrolData[c['carb']] !== undefined && (petrolData[c['isSelf']][c['carb']]['prezzo']*1)<(c['prezzo']*1)) return;
+                if(petrolData[c['isSelf']] !== undefined && petrolData[c['isSelf']][c['carb']] !== undefined && (petrolData[c['isSelf']][c['carb']]['prezzo']*1)<(c['prezzo']*1))
+                {
+                    return;
+                }
                 if(petrolData[c['isSelf']]===undefined) petrolData[c['isSelf']]=[];
                 petrolData[c['isSelf']][c['carb']]=[];
                 petrolData[c['isSelf']][c['carb']]['prezzo']=(c['prezzo']*1);
