@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Estratti Italiani</title>
+    <title>TrovaPrezzi Benzina</title>
 
    <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -48,7 +48,7 @@ ul.list{list-style:none;}
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Cheap Gas</a>
+          <a class="navbar-brand" href="#">TrovaPrezzi Benzina</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -72,7 +72,7 @@ ul.list{list-style:none;}
                  <div class="form-group">
               <label class="col-md-1 control-label" for="tipo">Tipo</label>
               <div class="col-md-11">
-                <select id="tipo" name="tipo" class="form-control">
+                <select id="tipo" name="tipo" class="form-control" onchange="loadData()">
                   <option value="1-x">Benzina</option>
                   <option value="1-1">Benzina (Self)</option>
                   <option value="1-0">Benzina (Servito)</option>
@@ -143,6 +143,7 @@ var CIcon = L.Icon.extend({
 });
 
 var petrolData;
+var isGeo=false;
 function getData(pointString){
     $.ajax({
       type: "GET",
@@ -150,10 +151,10 @@ function getData(pointString){
       data: {"pointsListStr": pointString},
       success: function(data){
         petrolData=[];
-        
+
         $.each(data.array,function(id,entry){
             $.each(entry.carburanti,function(id,c){
-            
+
             //self deve essere una chiave
                 if(petrolData[c['carb']] !== undefined && petrolData[c['isSelf']][c['carb']]['prezzo']<c['prezzo']) return;
                 if(petrolData[c['isSelf']]===undefined) petrolData[c['isSelf']]=[];
@@ -161,8 +162,9 @@ function getData(pointString){
                 petrolData[c['isSelf']][c['carb']]['prezzo']=c['prezzo'];
                 petrolData[c['isSelf']][c['carb']]['distributore']=entry;
             });
-              
+
         });
+        isGeo=true;
         loadData();
       },
       dataType: 'json'
@@ -171,6 +173,7 @@ function getData(pointString){
 
 function loadData()
 {
+    if (!isGeo) return;
     switch($('#tipo').val()){
         case "1-x":{
         actualDisplay('Benzina','x');
@@ -224,7 +227,7 @@ else
             laymarkers.clearLayers();
             map.removeLayer(laymarkers);
           };
-          
+
           var marker=L.marker([entry.lat,entry.lon],{icon: new CIcon({iconUrl: 'img/'+entry.bnd+'_th3.png'})});
 
           var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
