@@ -26,7 +26,7 @@
 .btn-group{width:100%;}
 .btn-default{width:20%}
 ul.list{list-style:none;}
-#map{width:100%; height:600px;}
+#map{width:100%; /*height:600px;*/}
 </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -242,6 +242,22 @@ else
 
           marker.addTo(laymarkers);
         laymarkers.addTo(map);
+}
+
+var mapmargin = 153;
+$('#map').css("height", ($(window).height() - mapmargin));
+$(window).on("resize", resize);
+resize();
+function resize(){
+
+    if($(window).width()>=980){
+        $('#map').css("height", ($(window).height() - mapmargin));    
+        $('#map').css("margin-top",10);
+    }else{
+        $('#map').css("height", ($(window).height() - (mapmargin+40)));    
+        $('#map').css("margin-top",0);
+    }
+
 }
     </script>
   </body>
