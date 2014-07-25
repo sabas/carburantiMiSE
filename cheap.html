@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -126,6 +125,8 @@ var lc=L.control.locate({
     locateOptions: {enableHighAccuracy: true, maxZoom: 12}
     }).addTo(map);
 
+laymarkers.addTo(map);
+
 map.on('dblclick', function(g) {
     getData(g.latlng.lat+"-"+g.latlng.lng+"#");
 });
@@ -141,9 +142,18 @@ var CIcon = L.Icon.extend({
         popupAnchor:  [0, -36]
     }
 });
+var distIcon = L.Icon.extend({
+    options: {
+        iconSize:     [16, 18],
+        iconAnchor:   [8, 18],
+        popupAnchor:  [0, -17],
+	iconUrl: 'img/point.png'
+    }
+});
 
 var petrolData;
 var isGeo=false;
+var mselected=undefined;
 function getData(pointString){
     $.ajax({
       type: "GET",
@@ -153,7 +163,17 @@ function getData(pointString){
         petrolData=[];
 
         $.each(data.array,function(id,entry){
+ 	var marker=L.marker([entry.lat,entry.lon],{icon: new distIcon()});
+
+              
+              var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
+              var prezzi="<table>";
+              prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
+
             $.each(entry.carburanti,function(id,c){
+		prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+c.isSelf+"</td></tr>";
+
+		//cheap
                 if(petrolData[c['isSelf']] !== undefined && petrolData[c['isSelf']][c['carb']] !== undefined && (petrolData[c['isSelf']][c['carb']]['prezzo']*1)<(c['prezzo']*1))
                 {
                     return;
@@ -161,8 +181,12 @@ function getData(pointString){
                 if(petrolData[c['isSelf']]===undefined) petrolData[c['isSelf']]=[];
                 petrolData[c['isSelf']][c['carb']]=[];
                 petrolData[c['isSelf']][c['carb']]['prezzo']=(c['prezzo']*1);
-                petrolData[c['isSelf']][c['carb']]['distributore']=entry;
+		petrolData[c['isSelf']][c['carb']]['bnd']=entry.bnd;
+                petrolData[c['isSelf']][c['carb']]['distributore']=marker;
             });
+   	      prezzi+="</table>";
+              marker.bindPopup(head+prezzi);
+              marker.addTo(laymarkers);
 
         });
         isGeo=true;
@@ -215,33 +239,20 @@ function actualDisplay(carb,self){
 var entry;
 if(self=='x')
 {
-    if (petrolData[0][carb]===undefined) entry=petrolData[1][carb]['distributore'];
-    else if (petrolData[1][carb]===undefined) entry=petrolData[0][carb]['distributore'];
+    if (petrolData[0][carb]===undefined) entry=petrolData[1][carb];
+    else if (petrolData[1][carb]===undefined) entry=petrolData[0][carb];
     else
-    if (petrolData[0][carb]['prezzo']<petrolData[1][carb]['prezzo']) entry=petrolData[0][carb]['distributore'];
-    else entry=petrolData[1][carb]['distributore'];
+    if (petrolData[0][carb]['prezzo']<petrolData[1][carb]['prezzo']) entry=petrolData[0][carb];
+    else entry=petrolData[1][carb];
 }
 else
-    entry=petrolData[self][carb]['distributore'];
+    entry=petrolData[self][carb];
 
-           if (map.hasLayer(laymarkers)) {
-            laymarkers.clearLayers();
-            map.removeLayer(laymarkers);
-          };
-
-          var marker=L.marker([entry.lat,entry.lon],{icon: new CIcon({iconUrl: 'img/'+entry.bnd+'_th3.png'})});
-
-          var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
-          var prezzi="<table>";
-          prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
-          $.each(entry.carburanti,function(id,c){
-            prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+c.isSelf+"</td></tr>";
-          });
-          prezzi+="</table>";
-          marker.bindPopup(head+prezzi);
-
-          marker.addTo(laymarkers);
-        laymarkers.addTo(map);
+bnd=entry['bnd'];
+entry=entry['distributore'];
+if (mselected!==undefined) mselected.setIcon(new distIcon());
+entry.setIcon(new CIcon({iconUrl: 'img/'+bnd+'_th3.png'}));
+mselected=entry;
 }
 
 var mapmargin = 153;
