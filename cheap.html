@@ -249,7 +249,6 @@ $('#map').css("height", ($(window).height() - mapmargin));
 $(window).on("resize", resize);
 resize();
 function resize(){
-
     if($(window).width()>=980){
         $('#map').css("height", ($(window).height() - mapmargin));    
         $('#map').css("margin-top",10);
@@ -257,7 +256,7 @@ function resize(){
         $('#map').css("height", ($(window).height() - (mapmargin+40)));    
         $('#map').css("margin-top",0);
     }
-
+map.invalidateSize();
 }
     </script>
   </body>
