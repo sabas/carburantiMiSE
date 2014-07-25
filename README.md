@@ -18,7 +18,7 @@ Contenuto
 
 distributori.html sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
 
-scraper: archivia tutti i dati dall'API in un certo punto temporale.
+scraper: archivia tutti i dati dall'API in un certo punto temporale. C'è sia una versione PHP che una versione Python per la creazione del database, in più un terzo script prepara il database in versione Spatialite.
 
 Note
 -----
