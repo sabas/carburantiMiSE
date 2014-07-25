@@ -6,7 +6,7 @@ echo "Start processing"
 for i in {1..20}
 do
  echo "Processing file $i"
- python scrape.py json/$i.json
+ python scrapeSPATIAL.py json/$i.json
 done
 echo "Start processing"
 echo "SELECT AddGeometryColumn('distributori' , 'the_geom', 4326, 'POINT', 'XY');" | spatialite db/scrape.spatialite
