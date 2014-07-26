@@ -8,7 +8,7 @@ import re
 with open(sys.argv[1]) as file:
 	data=json.load(file)
 	data=data['array']
-	dbcon = sqlite3.connect('db/scrape.sqlite')
+	dbcon = sqlite3.connect(sys.argv[2])
 	dbcon.isolation_level = None
 	cursor = dbcon.cursor()
 	cursor.execute('begin')
