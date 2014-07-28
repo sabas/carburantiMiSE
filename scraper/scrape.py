@@ -12,7 +12,7 @@ with open(sys.argv[1]) as file:
 	dbcon.isolation_level = None
 	cursor = dbcon.cursor()
 	cursor.execute('begin')
-	regex = re.compile(".*#(.*)\((.*)\)")
+	regex = re.compile(".*#(.*)\s+\((.*)\)")
 	for d in data:
 		addr=d['addr']
 		r = regex.search(addr)
