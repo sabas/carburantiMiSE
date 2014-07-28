@@ -89,3 +89,10 @@ Ricerca per area o per punto (area max 100kmq o 10km2 di raggio)
 ```
 
 Formato poligono lat-lon#[...]
+
+
+Percorso
+Fa il routing e passa la rappresentazione json (con carb come filtro opzionale)
+```
+ curl --data "googlePoints=[{'lat':44.44,'lng':8.88},...]" https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/percorso
+```
