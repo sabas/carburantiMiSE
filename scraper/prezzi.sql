@@ -1,6 +1,6 @@
 .headers on
 .mode list 
 .separator \t 
-.output prezzi.tsv 
+.output 'db/prezzi.tsv'
 select * from prezzi; 
 .exit

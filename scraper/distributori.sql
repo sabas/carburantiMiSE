@@ -1,6 +1,6 @@
 .headers on
 .mode list 
 .separator \t 
-.output distributori.tsv 
+.output 'db/distributori.tsv'
 select * from distributori; 
 .exit

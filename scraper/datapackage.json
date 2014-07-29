@@ -1,0 +1,115 @@
+{
+  "name":"osservatorio-carburanti",
+  "title":"Osservatorio Carburanti MiSE",
+  "description":"Distributori e prezzi dei carburanti sul territorio italiano raccolti e rilasciati dal Ministero dello Sviluppo Economico",
+  "datapackage_version":"1.0-beta.10",
+  "licenses":[
+    {
+      "id":"odc-odbl",
+      "name":"Open Data Commons Open Database License (ODbL)",
+      "version":"1.0",
+      "url":"http://opendatacommons.org/licenses/odbl/"
+    }
+  ],
+  "resources":[
+    {
+      "name":"distributori",
+      "url":"http://toolserver.openstreetmap.it/carburantiMiSE/scraper/db/distributori.tsv",
+      "format":"tsv",
+      "mediatype":"text/tab-separated-values",
+      "schema":{
+        "fields":[
+          {
+            "id":"id",
+            "description":"Identificativo",
+            "type":"integer",
+            "unique":true
+          },
+          {
+            "id":"name",
+            "description":"Ragione sociale",
+            "type":"string"
+          },
+          {
+            "id":"bnd",
+            "description":"Marca del distributore",
+            "type":"string"
+          },
+          {
+            "id":"lat",
+            "description":"Latitudine",
+            "type":"number"
+          },
+          {
+            "id":"lon",
+            "description":"Longitudine",
+            "type":"number"
+          },
+          {
+            "id":"addr",
+            "description":"Indirizzo completo",
+            "type":"string"
+          },
+          {
+            "id":"comune",
+            "description":"Comune",
+            "type":"string"
+          },
+          {
+            "id":"provincia",
+            "description":"Sigla della provincia",
+            "type":"string",
+            "pattern":"^[A-Z]{2}$"
+          }
+        ],
+        "primaryKey":"id"
+      }
+    },
+    {
+      "name":"prezzi",
+      "url":"http://toolserver.openstreetmap.it/carburantiMiSE/scraper/db/prezzi.tsv",
+      "format":"tsv",
+      "mediatype":"text/tab-separated-values",
+      "schema":{
+        "fields":[
+          {
+            "id":"id_d",
+            "description":"Identificativo del distributore",
+            "type":"integer",
+            "unique":true
+          },
+          {
+            "id":"dIns",
+            "description":"Data ed ora di rilevazione",
+            "type":"datetime"
+          },
+          {
+            "id":"carb",
+            "description":"Tipologia del carburante",
+            "type":"string"
+          },
+          {
+            "id":"isSelf",
+            "description":"Self service",
+            "type":"integer",
+            "pattern":"^[0-1]{1}$"
+          },
+          {
+            "id":"prezzo",
+            "description":"Prezzo praticato",
+            "type":"number"
+          }
+        ],
+        "foreignKeys":[
+          {
+            "fields":"id_d",
+            "reference":{
+              "resource":"distributori",
+              "fields":"id"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
