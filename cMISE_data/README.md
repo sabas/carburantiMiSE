@@ -8,4 +8,4 @@ quindi caricare il devtools tramite il comando:
 
 in seguito è possibile caricare il data package da remoto tramite R
 
-> devtools::install_github("carburantiMiSE / cMISE_data")
+> devtools::install_github("sabas", "carburantiMiSE/cMISE_data")
