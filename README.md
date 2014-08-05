@@ -16,9 +16,20 @@ Autori
 Contenuto
 ---------
 
-distributori.html sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
+##### distributori.html
 
-scraper: archivia tutti i dati dall'API in un certo punto temporale. C'è sia una versione PHP che una versione Python per la creazione del database, in più un terzo script prepara il database in versione Spatialite.
+Sfrutta l'endpoint "position" per trovare i distributori nell'intorno di una posizione (con la geolocalizzazione si può cercare nella posizione attuale; altrimenti facendo doppio click sulla mappa si interroga tale posizione).
+
+##### cheap.html
+
+Simile alla precedente, trova nel risultato della chiamata il distributore più conveniente per ogni carburante.
+
+##### scraper/
+Archivia tutti i dati dall'API in un certo punto temporale. C'è sia una versione PHP che una versione Python per la creazione del database, in più un terzo script prepara il database in versione Spatialite.
+
+##### Package per R
+
+Vedi [cMISE_data/README.md](cMISE_data/README.md)
 
 Note
 -----
