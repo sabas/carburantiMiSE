@@ -7,11 +7,14 @@ Live su http://toolserver.openstreetmap.it/carburantiMiSE/
 
 Icone provenienti dal sito dell'Osservatorio.
 
+Dalla discussione su Spaghetti Open Data è arrivato il repository https://github.com/spaghetti-open-data/osservatorio-carburanti
+
 Autori
 ------
 - Stefano Sabatini
 - Marco Braida
 - Fabrizio Tambussa
+- Andrea Zedda
 
 Contenuto
 ---------
