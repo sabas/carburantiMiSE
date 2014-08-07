@@ -4,6 +4,7 @@ import sys
 import json
 import sqlite3
 import re
+from datetime import datetime
 
 with open(sys.argv[1]) as file:
 	data=json.load(file)
@@ -27,9 +28,9 @@ with open(sys.argv[1]) as file:
                 carb=d['carburanti']
                 
                 for c in carb:
- 			cursor.execute('''INSERT OR REPLACE INTO `prezzi`(`id_d`, `dIns`, `carb`, `isSelf`, `prezzo`)  
-                	  VALUES (:id_d,:dIns,:carb,:isSelf,:prezzo)''',
-                	  {'id_d':d['id'],'dIns':d['dIns'],'carb':c['carb'],'isSelf':c['isSelf'],'prezzo':c['prezzo']})               	
+ 			cursor.execute('''INSERT INTO `prezzi`(`id_d`, `dIns`, `carb`, `isSelf`, `prezzo`, `dScrape`)  
+                	  VALUES (:id_d,:dIns,:carb,:isSelf,:prezzo,:dScrape)''',
+                	  {'id_d':d['id'],'dIns':d['dIns'],'carb':c['carb'],'isSelf':c['isSelf'],'prezzo':c['prezzo'],'dScrape':datetime.strftime(datetime.today(),'%Y%m%d')})               	
 
 	cursor.execute('end')
 	dbcon.commit()

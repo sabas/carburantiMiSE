@@ -14,5 +14,6 @@ CREATE TABLE "prezzi" (
   "dIns" datetime NOT NULL,
   "carb" varchar(20) NOT NULL,
   "isSelf" int(1) NOT NULL,
-  "prezzo" float NOT NULL
+  "prezzo" float NOT NULL,
+  "dScrape" int(6) NOT NULL
 );
