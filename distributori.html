@@ -88,6 +88,8 @@ var hash = new L.Hash(map);
 var laymarkers=L.layerGroup();
 var bounds=L.latLngBounds([]);
 
+var locationFound=false;
+
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
@@ -109,7 +111,9 @@ map.on('dblclick', function(g) {
 });
 
 map.on('locationfound', function(e) {
+	if(locationFound==true) return;
     getData(e.latitude+"-"+e.longitude+"#");
+	locationFound=true;
 });
 
 var CIcon = L.Icon.extend({
