@@ -1,4 +1,6 @@
 <?php
+  header("Access-Control-Allow-Origin: *");
+  
 $post=array();
 if(isset($_GET['r'])) $post['region']= $_GET['r'];
 if(isset($_GET['p'])) $post['province']= $_GET['p'];

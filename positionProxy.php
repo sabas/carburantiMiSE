@@ -1,5 +1,6 @@
 <?php
-
+ header("Access-Control-Allow-Origin: *");
+ 
 //open connection
 $ch = curl_init();
 
