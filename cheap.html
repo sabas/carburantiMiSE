@@ -269,6 +269,7 @@ $('#map').css("height", ($(window).height() - mapmargin));
 $(window).on("resize", resize);
 resize();
 function resize(){
+    hash.update();
     if($(window).width()>=980){
         $('#map').css("height", ($(window).height() - mapmargin));    
         $('#map').css("margin-top",10);
