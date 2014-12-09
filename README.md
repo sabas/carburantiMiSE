@@ -32,7 +32,7 @@ Archivia tutti i dati dall'API in un certo punto temporale. C'è sia una version
 
 ##### Package per R
 
-Vedi [cMISE_data/README.md](cMISE_data/README.md)
+Vedi https://github.com/sardinia-opendata/carburantiMiSE.DATA
 
 Note
 -----
