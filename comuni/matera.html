@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
 
-    <title>Matera Prezzi Benzina</title>
+    <title>Prezzi Benzina</title>
 
    <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -17,16 +16,16 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 
-<link rel="stylesheet" href="js/leaflet-gps.min.css" />
+<link rel="stylesheet" href="../js/leaflet-gps.min.css" />
     <!-- Custom styles for this template -->
     <style>body {
-  padding-top: 70px;
-}
-.btn-group{width:100%;}
-.btn-default{width:20%}
-ul.list{list-style:none;}
-#map{width:100%; /*height:600px;*/}
-</style>
+	  padding-top: 70px;
+	}
+	.btn-group{width:100%;}
+	.btn-default{width:20%}
+	ul.list{list-style:none;}
+	#map{width:100%; /*height:600px;*/}
+	</style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -47,14 +46,13 @@ ul.list{list-style:none;}
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Matera Prezzi Benzina</a>
+          <a class="navbar-brand" href="#">Prezzi Benzina</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="https://github.com/sabas/carburantiMiSE" target="_blank">Source</a></li>
           </ul>
-
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
     </div>
 
@@ -64,13 +62,8 @@ ul.list{list-style:none;}
             <div id="map"></div>
         </div>
      </div>
+    </div>
 
-    </div> <!-- /container -->
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
@@ -78,10 +71,15 @@ ul.list{list-style:none;}
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
     <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-hash/v0.2.1/leaflet-hash.js'></script>
-	<script src="js/leaflet-gps.min.js"></script>
+	<script src="../js/leaflet-gps.min.js"></script>
+	<script src="comuni.js"></script>
 
 <script>
-var map = L.map('map',{doubleClickZoom:false}).setView([40.6637,16.6268], 12);
+var lat=40.6637, lon=16.6268, zoom=11;
+//see https://github.com/sabas/carburantiMiSE/blob/master/README.md#note
+var regione=3, provincia='MT', comune='Matera';
+
+var map = L.map('map',{doubleClickZoom:false}).setView([lat,lon], zoom);
 var hash = new L.Hash(map);
 
 var laymarkers=L.layerGroup();
@@ -92,66 +90,13 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-
-var CIcon = L.Icon.extend({
-    options: {
-        iconSize:     [32, 37],
-        iconAnchor:   [16, 37],
-        popupAnchor:  [0, -36]
-    }
-});
-
-function getData(regio,provi,citta){
-    $.ajax({
-      type: "GET",
-      url: "localitaProxy.php",//"https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/position",
-      data: {"r": regio, "p":provi,"t":citta},
-      success: function(data){        
-          if (map.hasLayer(laymarkers)) {
-            //console.log("Clear previous POI layer...");
-            laymarkers.clearLayers();
-          };
-          //map.panTo([data.center.first,data.center.second]);
-             
-          $.each(data.array,function(id,entry){
-              var marker=L.marker([entry.lat,entry.lon],{icon: new CIcon({iconUrl: 'img/'+entry.bnd+'_th3.png'})});
-              bounds.extend([entry.lat,entry.lon]);
-              var head="<b>Nome</b>: "+entry.name+"<br/><b>Brand</b>: "+entry.bnd+"<br/><b>Indirizzo</b>: "+entry.addr+"<br/><b>Aggiornato al</b>: "+entry.dIns+"<br/>";
-              var prezzi="<table>";
-              prezzi+="<tr><th>Tipo</th><th>Prezzo</th><th>SelfService</th></tr>";
-              $.each(entry.carburanti,function(id,c){
-              var self='no';
-              if (c.isSelf==1) self="si";
-                prezzi+="<tr><td>"+c.carb+"</td><td>"+c.prezzo+"</td><td>"+self+"</td></tr>";
-              });
-              prezzi+="</table>";
-              marker.bindPopup(head+prezzi);
-              
-              marker.addTo(laymarkers);
-          });
-          laymarkers.addTo(map);
-          //map.fitBounds(bounds);
-      },
-      dataType: 'json'
-    });
-}
-
-getData(3,"MT","Matera");
+getData(regione,provincia,comune);
 
 var mapmargin = 80;
 $('#map').css("height", ($(window).height() - mapmargin));
 $(window).on("resize", resize);
 resize();
-function resize(){
-    if($(window).width()>=980){
-        $('#map').css("height", ($(window).height() - mapmargin));    
-        $('#map').css("margin-top",10);
-    }else{
-        $('#map').css("height", ($(window).height() - (mapmargin-10)));
-        $('#map').css("margin-top",0);
-    }
-map.invalidateSize();
-}
+
 </script>
 </body>
 </html>
