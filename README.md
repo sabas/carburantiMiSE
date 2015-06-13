@@ -1,6 +1,11 @@
 carburantiMiSE
 ==============
 
+Deprecated
+---
+Con l'avvio degli OpenData ministeriali lo scraper è stato ritirato
+
+
 Interrogazione dell'[Osservatorio Carburanti del Ministero dello Sviluppo Economico](https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/).
 
 Live su http://toolserver.openstreetmap.it/carburantiMiSE/
