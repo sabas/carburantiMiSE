@@ -3,7 +3,8 @@ carburantiMiSE
 
 Deprecated
 ---
-Con l'avvio degli OpenData ministeriali lo scraper è stato ritirato
+Con l'avvio degli OpenData ministeriali lo scraper è stato ritirato.
+I dati sono stati sistemati ed è stato avviato un progetto di archiviazione su [Internet Archive](https://archive.org/details/opencarburanti).
 
 
 Interrogazione dell'[Osservatorio Carburanti del Ministero dello Sviluppo Economico](https://carburanti.mise.gov.it/OssPrezziSearch/ricerca/).
